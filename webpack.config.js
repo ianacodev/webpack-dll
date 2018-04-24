@@ -39,8 +39,13 @@ module.exports = {
     }),
     new ProgressBarWebpackPlugin(),
     new webpack.DllReferencePlugin({
-      context: __dirname,
-      manifest: path.join(__dirname, 'dist', 'vendor.json')
+      context: process.cwd(),
+      manifest: require(path.resolve(
+        __dirname,
+        'dist',
+        'vendor',
+        'vendor-manifest.json'
+      ))
     })
   ],
   devtool: 'source-map',

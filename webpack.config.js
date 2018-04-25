@@ -1,14 +1,14 @@
 const path = require('path');
+const webpack = require('webpack');
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ProgressBarWebpackPlugin = require('progress-bar-webpack-plugin');
 
 module.exports = {
-  cache: true,
+  cache: false,
   context: path.resolve(__dirname, 'src'),
   entry: {
-    app: ['./app/app.js'],
-    vendor: []
+    app: ['./app/app.js']
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
@@ -26,6 +26,10 @@ module.exports = {
           }
         ],
         include: [path.join(__dirname, 'src')]
+      },
+      {
+        test: /\.css$/,
+        use: [{ loader: 'style-loader' }, { loader: 'css-loader' }]
       }
     ]
   },
@@ -33,7 +37,16 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, 'index.html')
     }),
-    new ProgressBarWebpackPlugin()
+    new ProgressBarWebpackPlugin(),
+    new webpack.DllReferencePlugin({
+      context: process.cwd(),
+      manifest: require(path.resolve(
+        __dirname,
+        'dist',
+        'vendor',
+        'vendor-manifest.json'
+      ))
+    })
   ],
   devtool: 'source-map',
   devServer: {
